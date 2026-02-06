@@ -1,3 +1,0 @@
-0000000000000000000000000000000000000000 31b515c1a86424aeefd851dc9ab757ec261b0f2a ZacP <zac.priday@wisetechglobal.com> 1766826117 +1100	clone: from https://github.com/4ndv/opendeck-akp153.git
-31b515c1a86424aeefd851dc9ab757ec261b0f2a 87ac5375736bd31da7c7e40da7a81ad2b66baed0 ZacP <zac.priday@wisetechglobal.com> 1770367852 +1100	commit: feat: better support for Ajazz N1 device with raw HID and button mapping tools
-87ac5375736bd31da7c7e40da7a81ad2b66baed0 40a1a059b9d2ae8c0954e9c62280bd315cade2cd ZacP <zac.priday@wisetechglobal.com> 1770368056 +1100	commit: docs(readme): update plugin description and remove unsupported devices

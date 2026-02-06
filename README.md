@@ -2,7 +2,8 @@
 
 # OpenDeck Ajazz N1 Plugin
 
-**Fork of [opendeck-ajazz-n1](https://github.com/4ndv/opendeck-ajazz-n1)**
+**Fork of [opendeck-ajazz-n1](https://github.com/4ndv/opendeck-akp153)**
+Many thanks to the original author for the work done on this plugin and everyone else involved in opendeck and the ecosystem.
 
 An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for the Ajazz N1 only.
 
@@ -16,13 +17,12 @@ Requires OpenDeck 2.5.0 or newer
 
 ## Platform support
 
-- Linux: Guaranteed, if stuff breaks - I'll probably catch it before public release
-- Mac: Best effort, no tests before release, things may break, but I probably have means to fix them
-- Windows: Zero effort, no tests before release, if stuff breaks - too bad, it's up to you to contribute fixes
+- Linux: Developed on Linux, and I use this one, so I assume I'll catch the bugs.
+- Mac & Windows: No testing has been performed but it should work. Happy to accept PRs for fixes but I don't have the means or inclination to test these.
 
 ## Installation
 
-1. Download an archive from [releases](https://github.com/4ndv/opendeck-ajazz-n1/releases)
+1. Download an archive from [releases](https://github.com/zacpr/opendeck-ajazz-n1/releases)
 2. In OpenDeck: Plugins -> Install from file
 3. Linux: Download [udev rules](./40-opendeck-ajazz-n1.rules) and install them by copying into `/etc/udev/rules.d/` and running `sudo udevadm control --reload-rules`
 4. Unplug and plug again the device, restart OpenDeck
