@@ -1,4 +1,5 @@
 use mirajazz::{error::MirajazzError, types::DeviceInput};
+use std::sync::Mutex;
 
 /// AKP153 key count (3x6 = 18)
 const AKP153_KEY_COUNT: usize = 18;
@@ -7,27 +8,98 @@ const N1_KEY_COUNT: usize = 18;
 /// Maximum key count we support (for bounds checking)
 const MAX_KEY_COUNT: usize = 18;
 
-/// Process raw input from N1 device (18 keys: 15 buttons + 3 LCDs)
+/// N1 encoder/dial input IDs
+/// Input 30: Left face button (above the dial)
+/// Input 31: Right face button (above the dial)
+/// Input 35: Dial press (push down on the dial)
+/// Input 50: Dial rotation counter-clockwise (left)
+/// Input 51: Dial rotation clockwise (right)
+const N1_FACE_BUTTON_LEFT: u8 = 30;
+const N1_FACE_BUTTON_RIGHT: u8 = 31;
+const N1_DIAL_PRESS: u8 = 35;
+const N1_DIAL_ROTATE_CCW: u8 = 50;
+const N1_DIAL_ROTATE_CW: u8 = 51;
+
+/// Track current encoder states to properly handle multiple encoders
+/// [encoder0_pressed, encoder1_pressed, encoder2_pressed]
+static ENCODER_STATES: Mutex<[bool; 3]> = Mutex::new([false, false, false]);
+
+/// Process raw input from N1 device (18 keys: 15 buttons + 3 LCDs, plus dial/face buttons)
 /// Device inputs 16-18 (top LCDs) map to OpenDeck keys 0-2
 /// Device inputs 1-15 (main grid) map to OpenDeck keys 3-17
-/// Device inputs 30, 31 (normal buttons) are ignored for now
+/// Device input 30 (left face button) maps to encoder 0 press
+/// Device input 31 (right face button) maps to encoder 1 press
+/// Device input 35 (dial press) maps to encoder 2 press
+/// Device inputs 50, 51 (dial rotation) map to encoder 2 twist
 pub fn process_input_n1(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
     log::info!("Processing N1 input: {}, {}", input, state);
 
-    // Handle normal buttons (inputs 30, 31) - they work but have no display
-    // For now, we silently ignore them. TODO: Map to touchpoints or actions
-    if input == 30 || input == 31 {
-        log::debug!("N1 normal button pressed: input={}, ignoring", input);
-        return Ok(DeviceInput::ButtonStateChange(vec![false; N1_KEY_COUNT]));
-    }
-
-    match input as usize {
+    let result = match input {
+        // Main grid and top LCDs (inputs 1-18)
         1..=18 => read_button_press_n1(input, state),
+        
+        // Left face button - mapped to encoder 0
+        N1_FACE_BUTTON_LEFT => {
+            let mut states = ENCODER_STATES.lock().unwrap();
+            states[0] = state != 0;
+            Ok(DeviceInput::EncoderStateChange(vec![
+                states[0],  // Encoder 0: left face button
+                states[1],  // Encoder 1: preserve state
+                states[2],  // Encoder 2: preserve state
+            ]))
+        }
+        
+        // Right face button - mapped to encoder 1
+        N1_FACE_BUTTON_RIGHT => {
+            let mut states = ENCODER_STATES.lock().unwrap();
+            states[1] = state != 0;
+            Ok(DeviceInput::EncoderStateChange(vec![
+                states[0],  // Encoder 0: preserve state
+                states[1],  // Encoder 1: right face button
+                states[2],  // Encoder 2: preserve state
+            ]))
+        }
+        
+        // Dial press - mapped to encoder 2
+        N1_DIAL_PRESS => {
+            let mut states = ENCODER_STATES.lock().unwrap();
+            states[2] = state != 0;
+            Ok(DeviceInput::EncoderStateChange(vec![
+                states[0],  // Encoder 0: preserve state
+                states[1],  // Encoder 1: preserve state
+                states[2],  // Encoder 2: dial press
+            ]))
+        }
+        
+        // Dial rotation - mapped to encoder 2
+        N1_DIAL_ROTATE_CCW => {
+            // Counter-clockwise rotation on encoder 2
+            Ok(DeviceInput::EncoderTwist(vec![0, 0, -1]))
+        }
+        N1_DIAL_ROTATE_CW => {
+            // Clockwise rotation on encoder 2
+            Ok(DeviceInput::EncoderTwist(vec![0, 0, 1]))
+        }
+        
         _ => {
             log::warn!("Unknown N1 input {}", input);
             Err(MirajazzError::BadData)
         }
+    };
+    
+    if let Ok(ref device_input) = result {
+        match device_input {
+            DeviceInput::EncoderStateChange(states) => {
+                log::info!("→ Generated EncoderStateChange: {:?}", states);
+            }
+            DeviceInput::EncoderTwist(twists) => {
+                log::info!("→ Generated EncoderTwist: {:?}", twists);
+            }
+            _ => {}
+        }
     }
+    
+    result
 }
 
 /// Process raw input from AKP153 device (18 buttons, remapped)
@@ -166,5 +238,38 @@ fn read_button_press_akp153(input: u8, state: u8) -> Result<DeviceInput, Mirajaz
         &button_states,
         MAX_KEY_COUNT,
     )))
+}
+
+/// N1 has 2 face buttons (inputs 30, 31) that have no display.
+/// We map both to encoder 0 press events so they can trigger actions in OpenDeck.
+fn read_face_button_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
+    // Map both face buttons to encoder 0
+    // When either button is pressed, encoder 0 is "pressed"
+    let encoder_pressed = state != 0;
+    
+    log::debug!(
+        "N1 face button {} {} → encoder 0 {}",
+        input,
+        if encoder_pressed { "pressed" } else { "released" },
+        if encoder_pressed { "pressed" } else { "released" }
+    );
+    
+    // Return encoder state change for encoder 0
+    Ok(DeviceInput::EncoderStateChange(vec![encoder_pressed]))
+}
+
+/// N1 dial press (input 35) - pressing down on the dial
+/// Mapped to encoder 0 press event
+fn read_dial_press(state: u8) -> Result<DeviceInput, MirajazzError> {
+    let encoder_pressed = state != 0;
+    
+    log::debug!(
+        "N1 dial press {} → encoder 0 {}",
+        if encoder_pressed { "pressed" } else { "released" },
+        if encoder_pressed { "pressed" } else { "released" }
+    );
+    
+    // Return encoder state change for encoder 0
+    Ok(DeviceInput::EncoderStateChange(vec![encoder_pressed]))
 }
 

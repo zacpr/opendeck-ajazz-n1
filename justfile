@@ -38,9 +38,10 @@ clean:
 
 collect:
     rm -rf build
-    mkdir -p build/{{id}}
+    mkdir -p build/{{id}}/scripts
     cp assets/icon.png build/{{id}}/icon.png
     cp manifest.json build/{{id}}
+    cp -r scripts/* build/{{id}}/scripts/
     cp target/plugin-linux/x86_64-unknown-linux-gnu/release/opendeck-ajazz-n1 build/{{id}}/opendeck-ajazz-n1-linux
     @echo ""
     @echo "✓ Plugin files collected to: $(pwd)/build/{{id}}/"

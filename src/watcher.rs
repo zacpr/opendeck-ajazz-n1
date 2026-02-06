@@ -4,7 +4,7 @@ use mirajazz::{
     error::MirajazzError,
     types::{DeviceLifecycleEvent, HidDeviceInfo},
 };
-use openaction::OUTBOUND_EVENT_MANAGER;
+
 use tokio_util::sync::CancellationToken;
 
 use crate::{
@@ -125,9 +125,8 @@ pub async fn watcher_task(token: CancellationToken) -> Result<(), MirajazzError>
 
                     DEVICES.write().await.remove(&id);
 
-                    if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
-                        outbound.deregister_device(id.clone()).await.ok();
-                    }
+                    // Unregister device with OpenAction (ignore errors)
+                    let _ = openaction::device_plugin::unregister_device(id.clone()).await;
 
                     log::info!("Disconnected device {}", id);
                 }

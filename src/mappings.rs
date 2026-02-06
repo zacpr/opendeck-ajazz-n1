@@ -7,10 +7,11 @@ use mirajazz::{
 // Must be unique between all the plugins, 2 characters long and match `DeviceNamespace` field in `manifest.json`
 pub const DEVICE_NAMESPACE: &str = "N1";
 
-pub const ROW_COUNT: usize = 3;
-pub const COL_COUNT: usize = 6;
-pub const KEY_COUNT: usize = ROW_COUNT * COL_COUNT;
-pub const ENCODER_COUNT: usize = 0;
+// Legacy constants (kept for reference but unused)
+pub const _ROW_COUNT: usize = 3;
+pub const _COL_COUNT: usize = 6;
+pub const _KEY_COUNT: usize = _ROW_COUNT * _COL_COUNT;
+pub const _ENCODER_COUNT: usize = 0;
 
 #[derive(Debug, Clone)]
 pub enum Kind {
@@ -222,9 +223,13 @@ impl Kind {
     }
 
     /// Returns number of encoders (dials/knobs) for this device
+    /// N1 has 3 virtual encoders:
+    /// - Encoder 0: Left face button
+    /// - Encoder 1: Right face button
+    /// - Encoder 2: Dial (press + rotate)
     pub fn encoder_count(&self) -> usize {
         match self {
-            Self::N1 => 1,
+            Self::N1 => 3,
             _ => 0,
         }
     }

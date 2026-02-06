@@ -3,7 +3,7 @@ use std::time::Duration;
 use data_url::DataUrl;
 use image::load_from_memory_with_format;
 use mirajazz::{device::Device, error::MirajazzError, state::DeviceStateUpdate};
-use openaction::{OUTBOUND_EVENT_MANAGER, SetImageEvent};
+use openaction::global_events::SetImageEvent;
 use tokio::time::interval;
 use tokio_util::sync::CancellationToken;
 
@@ -53,20 +53,22 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
     };
 
     log::info!("Registering device {}", candidate.id);
-    if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
-        let (rows, cols) = candidate.kind.layout();
-        outbound
-            .register_device(
-                candidate.id.clone(),
-                candidate.kind.human_name(),
-                rows as u8,
-                cols as u8,
-                candidate.kind.encoder_count() as u8,
-                0,
-            )
-            .await
-            .unwrap();
+    let (rows, cols) = candidate.kind.layout();
+    let encoder_count = candidate.kind.encoder_count() as u8;
+    log::info!("Device layout: {} rows, {} cols, {} encoders", rows, cols, encoder_count);
+    
+    if let Err(e) = openaction::device_plugin::register_device(
+        candidate.id.clone(),
+        candidate.kind.human_name(),
+        rows as u8,
+        cols as u8,
+        encoder_count,
+        0,
+    ).await {
+        log::error!("Failed to register device: {}", e);
+        return;
     }
+    log::info!("Device registered successfully with {} encoders", encoder_count);
 
     DEVICES.write().await.insert(candidate.id.clone(), device);
 
@@ -95,8 +97,8 @@ pub async fn handle_error(id: &String, err: MirajazzError) -> bool {
     }
 
     log::info!("Deregistering device {}", id);
-    if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
-        outbound.deregister_device(id.clone()).await.unwrap();
+    if let Err(e) = openaction::device_plugin::unregister_device(id.clone()).await {
+        log::error!("Failed to unregister device: {}", e);
     }
 
     log::info!("Cancelling tasks for device {}", id);
@@ -168,27 +170,60 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
         };
 
         for update in updates {
-            log::info!("New update: {:#?}", update);
+            match &update {
+                DeviceStateUpdate::EncoderDown(enc) => {
+                    log::info!("🎯 ENCODER DOWN: encoder={}", enc);
+                }
+                DeviceStateUpdate::EncoderUp(enc) => {
+                    log::info!("🎯 ENCODER UP: encoder={}", enc);
+                }
+                DeviceStateUpdate::EncoderTwist(enc, val) => {
+                    log::info!("🎯 ENCODER TWIST: encoder={} value={}", enc, val);
+                }
+                _ => {
+                    log::info!("New update: {:#?}", update);
+                }
+            }
 
             let id = candidate.id.clone();
 
-            if let Some(outbound) = OUTBOUND_EVENT_MANAGER.lock().await.as_mut() {
-                match update {
-                    DeviceStateUpdate::ButtonDown(key) => outbound.key_down(id, key).await.unwrap(),
-                    DeviceStateUpdate::ButtonUp(key) => outbound.key_up(id, key).await.unwrap(),
-                    DeviceStateUpdate::EncoderDown(encoder) => {
-                        outbound.encoder_down(id, encoder).await.unwrap();
-                    }
-                    DeviceStateUpdate::EncoderUp(encoder) => {
-                        outbound.encoder_up(id, encoder).await.unwrap();
-                    }
-                    DeviceStateUpdate::EncoderTwist(encoder, val) => {
-                        outbound
-                            .encoder_change(id, encoder, val as i16)
-                            .await
-                            .unwrap();
-                    }
+            let result = match update {
+                DeviceStateUpdate::ButtonDown(key) => {
+                    openaction::device_plugin::key_down(id, key).await
                 }
+                DeviceStateUpdate::ButtonUp(key) => {
+                    openaction::device_plugin::key_up(id, key).await
+                }
+                DeviceStateUpdate::EncoderDown(encoder) => {
+                    log::info!("📤 Sending encoder_down(id={}, encoder={})", id, encoder);
+                    let result = openaction::device_plugin::encoder_down(id, encoder).await;
+                    if let Err(ref e) = result {
+                        log::error!("Failed to send encoder_down: {}", e);
+                    }
+                    result
+                }
+                DeviceStateUpdate::EncoderUp(encoder) => {
+                    log::info!("📤 Sending encoder_up(id={}, encoder={})", id, encoder);
+                    let result = openaction::device_plugin::encoder_up(id, encoder).await;
+                    if let Err(ref e) = result {
+                        log::error!("Failed to send encoder_up: {}", e);
+                    }
+                    result
+                }
+                DeviceStateUpdate::EncoderTwist(encoder, val) => {
+                    log::info!("📤 Sending encoder_change(id={}, encoder={}, val={})", id, encoder, val);
+                    let result = openaction::device_plugin::encoder_change(
+                        id, encoder, val as i16
+                    ).await;
+                    if let Err(ref e) = result {
+                        log::error!("Failed to send encoder_change: {}", e);
+                    }
+                    result
+                }
+            };
+
+            if let Err(e) = result {
+                log::error!("Failed to send event to OpenAction: {}", e);
             }
         }
     }
@@ -225,7 +260,10 @@ async fn keepalive_task(candidate: &CandidateDevice) -> Result<(), MirajazzError
 
 /// Handles different combinations of "set image" event, including clearing the specific buttons and whole device
 pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(), MirajazzError> {
-    match (evt.position, evt.image) {
+    // Get position from the event - it's Option<u8> in v2
+    let position = evt.position;
+    
+    match (position, evt.image) {
         (Some(position), Some(image)) => {
             log::info!("Setting image for button {}", position);
 

@@ -1,6 +1,5 @@
 use device::{handle_error, handle_set_image};
 use mirajazz::device::Device;
-use openaction::*;
 use std::{collections::HashMap, process::exit, sync::LazyLock};
 use tokio::sync::{Mutex, RwLock};
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
@@ -20,12 +19,17 @@ pub static TOKENS: LazyLock<RwLock<HashMap<String, CancellationToken>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 pub static TRACKER: LazyLock<Mutex<TaskTracker>> = LazyLock::new(|| Mutex::new(TaskTracker::new()));
 
-struct GlobalEventHandler {}
-impl openaction::GlobalEventHandler for GlobalEventHandler {
-    async fn plugin_ready(
-        &self,
-        _outbound: &mut openaction::OutboundEventManager,
-    ) -> EventHandlerResult {
+use openaction::global_events::{
+    GlobalEventHandler, SetBrightnessEvent, SetImageEvent,
+};
+use openaction::OpenActionResult;
+use openaction::async_trait;
+
+struct GlobalEventHandlerImpl {}
+
+#[async_trait]
+impl GlobalEventHandler for GlobalEventHandlerImpl {
+    async fn plugin_ready(&self) -> OpenActionResult<()> {
         let tracker = TRACKER.lock().await.clone();
 
         let token = CancellationToken::new();
@@ -41,15 +45,14 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
         Ok(())
     }
 
-    async fn set_image(
+    async fn device_plugin_set_image(
         &self,
         event: SetImageEvent,
-        _outbound: &mut OutboundEventManager,
-    ) -> EventHandlerResult {
+    ) -> OpenActionResult<()> {
         log::debug!("Asked to set image: {:#?}", event);
 
-        // Skip knobs images
-        if event.controller == Some("Encoder".to_string()) {
+        // Skip knob images
+        if event.controller.as_deref() == Some("Encoder") {
             log::debug!("Looks like a knob, no need to set image");
             return Ok(());
         }
@@ -68,11 +71,10 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
         Ok(())
     }
 
-    async fn set_brightness(
+    async fn device_plugin_set_brightness(
         &self,
         event: SetBrightnessEvent,
-        _outbound: &mut OutboundEventManager,
-    ) -> EventHandlerResult {
+    ) -> OpenActionResult<()> {
         log::debug!("Asked to set brightness: {:#?}", event);
 
         let id = event.device.clone();
@@ -91,22 +93,11 @@ impl openaction::GlobalEventHandler for GlobalEventHandler {
     }
 }
 
-struct ActionEventHandler {}
-impl openaction::ActionEventHandler for ActionEventHandler {}
-
 async fn shutdown() {
     let tokens = TOKENS.write().await;
 
     for (_, token) in tokens.iter() {
         token.cancel();
-    }
-}
-
-async fn connect() {
-    if let Err(error) = init_plugin(GlobalEventHandler {}, ActionEventHandler {}).await {
-        log::error!("Failed to initialize plugin: {}", error);
-
-        exit(1);
     }
 }
 
@@ -122,9 +113,7 @@ async fn sigterm() -> Result<(), Box<dyn std::error::Error>> {
 #[cfg(target_os = "windows")]
 async fn sigterm() -> Result<(), Box<dyn std::error::Error>> {
     // Future that would never resolve, so select only acts on OpenDeck connection loss
-    // TODO: Proper windows termination handling
     std::future::pending::<()>().await;
-
     Ok(())
 }
 
@@ -138,9 +127,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     )
     .unwrap();
 
+    // Set the global event handler (must be static)
+    static HANDLER: GlobalEventHandlerImpl = GlobalEventHandlerImpl {};
+    openaction::global_events::set_global_event_handler(&HANDLER);
+
     tokio::select! {
-        _ = connect() => {},
-        _ = sigterm() => {},
+        result = openaction::run(std::env::args().collect()) => {
+            if let Err(e) = result {
+                log::error!("OpenAction error: {}", e);
+            }
+        }
+        _ = sigterm() => {}
     }
 
     log::info!("Shutting down");
