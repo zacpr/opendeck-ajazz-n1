@@ -42,7 +42,14 @@ collect:
     cp assets/icon.png build/{{id}}/icon.png
     cp manifest.json build/{{id}}
     cp target/plugin-linux/x86_64-unknown-linux-gnu/release/opendeck-ajazz-n1 build/{{id}}/opendeck-ajazz-n1-linux
+    @echo ""
+    @echo "✓ Plugin files collected to: $(pwd)/build/{{id}}/"
+    @echo ""
 
 [working-directory: "build"]
 zip:
     zip -r opendeck-ajazz-n1.sdPlugin {{id}}/
+    @echo ""
+    @echo "Build output dir: $(pwd)"
+    @echo "✓ Plugin package created: $(pwd)/opendeck-ajazz-n1.sdPlugin"
+    @echo ""
