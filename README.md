@@ -2,7 +2,7 @@
 
 # OpenDeck Ajazz N1 Plugin
 
-**Fork of [opendeck-ajazz-n1](https://github.com/4ndv/opendeck-akp153)**
+**Fork of [opendeck-akp153](https://github.com/4ndv/opendeck-akp153)**
 Many thanks to the original author for the work done on this plugin and everyone else involved in opendeck and the ecosystem.
 
 An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for the Ajazz N1 only.
