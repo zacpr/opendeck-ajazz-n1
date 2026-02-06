@@ -20,24 +20,20 @@ Built with [openaction](https://crates.io/crates/openaction) 2.5.0
 ## Features
 
 - Full support for all 15 main buttons + 3 top LCD buttons
-- **Dial Support** (Encoder 0):
-  - ✅ **Dial Press**: Works - assign actions to dial down/up events
-  - ⚠️ **Dial Rotation**: Experimental - may not trigger actions reliably
-- **Face Buttons**: Experimental - currently ignored
+- **Dial Press**: Working - the dial can be used as a button (encoder 0)
 - Software mode control for full device management
 
-### Using the Dial (Encoder)
+### Encoder / Dial Support (Work in Progress)
 
-OpenDeck's default actions don't all support encoders. Use **Multi-Action** or **Run Command** for dial actions.
+**Status**: The dial press function works and can trigger actions. Dial rotation and the face buttons above the dial are a work in progress.
 
-#### Important Dial Behavior Notes
+**The Challenge**: The Ajazz N1 device firmware aggressively captures certain input combinations for its own "scene switching" functionality:
+- Rotating the dial while depressed triggers firmware scene switching
+- The face buttons (inputs 30/31) may also be intercepted by the firmware
 
-- **Scene Swap**: Rotating the dial while it is depressed is captured by the device firmware to swap between 'scenes'. This behavior cannot be overridden by the plugin.
-- **Dial Press**: Works reliably - assign actions to encoder 0 press/release
-- **Dial Rotation**: Returns `-1` (CCW) or `1` (CW) — currently experimental and may not work reliably in the GUI
-- **Face Buttons**: The two small buttons above the dial are currently experimental and disabled
+While we can detect these inputs at the USB level, the device firmware may intercept or override them before they reach the host. This makes reliable encoder rotation and face button support difficult or potentially impossible to implement fully.
 
-> **Note on rotation values**: The dial returns exactly `-1` (counter-clockwise) or `1` (clockwise) — **not** `+1`. This distinction matters because many commands interpret bare numbers differently than signed numbers. For example, `pactl set-sink-volume @DEFAULT_SINK@ 1` sets volume to 1% (absolute), while `pactl set-sink-volume @DEFAULT_SINK@ +1` increments by 1%.
+We're continuing to investigate workarounds, but full encoder/face button configuration may be limited by the device firmware itself.
 
 ## Platform support
 
