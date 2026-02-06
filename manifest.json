@@ -2,7 +2,7 @@
   "Name": "Ajazz N1",
   "Description": "Device support plugin for Ajazz N1",
   "Author": "Zac Priday",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "PluginUUID": "net.ashurtech.plugins.opendeck-ajazz-n1",
   "CodePathLin": "opendeck-ajazz-n1-linux",
   "Icon": "icon",
