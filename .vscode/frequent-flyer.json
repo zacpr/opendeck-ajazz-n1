@@ -1,0 +1,664 @@
+{
+  "version": 1,
+  "files": {
+    "src/device.rs": {
+      "path": "src/device.rs",
+      "openCount": 18,
+      "editCount": 6,
+      "saveCount": 7,
+      "lastOpened": 1770367221250,
+      "lastEdited": 1769871166510,
+      "lastSaved": 1769871562940,
+      "recentOpens": [
+        1769208472974,
+        1769260358092,
+        1769261463691,
+        1769261926675,
+        1769262263451,
+        1769262863277,
+        1769262888479,
+        1769281962777,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1769859466191,
+        1769860197704,
+        1769868628018,
+        1769870440970,
+        1769871088711,
+        1770367004569,
+        1770367221250
+      ],
+      "recentEdits": [
+        1769261465698,
+        1769261928688,
+        1769871138072,
+        1769871144749,
+        1769871152634,
+        1769871166510
+      ]
+    },
+    "Cargo.toml": {
+      "path": "Cargo.toml",
+      "openCount": 18,
+      "editCount": 3,
+      "saveCount": 5,
+      "lastOpened": 1770367221102,
+      "lastEdited": 1769860243948,
+      "lastSaved": 1769870458902,
+      "recentOpens": [
+        1769208472974,
+        1769218086971,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769281962777,
+        1769285850668,
+        1769286054714,
+        1769345621946,
+        1769345652105,
+        1769350299516,
+        1769350312853,
+        1769420294347,
+        1769498343990,
+        1769500696400,
+        1769860241847,
+        1770367004569,
+        1770367221102
+      ],
+      "recentEdits": [
+        1769218089154,
+        1769350400814,
+        1769860243948
+      ]
+    },
+    "src/mappings.rs": {
+      "path": "src/mappings.rs",
+      "openCount": 22,
+      "editCount": 3,
+      "saveCount": 3,
+      "lastOpened": 1770367221259,
+      "lastEdited": 1769349587749,
+      "lastSaved": 1769349585805,
+      "recentOpens": [
+        1769208472974,
+        1769260358092,
+        1769261869489,
+        1769262263453,
+        1769262863277,
+        1769262888479,
+        1769281962776,
+        1769285850668,
+        1769286054715,
+        1769345621946,
+        1769348518670,
+        1769349526337,
+        1769859466010,
+        1769870440143,
+        1769870440250,
+        1769870440353,
+        1769870440456,
+        1769870442331,
+        1769870442474,
+        1769870442577,
+        1769870442679,
+        1770367221259
+      ],
+      "recentEdits": [
+        1769261871492,
+        1769348520673,
+        1769349587749
+      ]
+    },
+    "src/inputs.rs": {
+      "path": "src/inputs.rs",
+      "openCount": 15,
+      "editCount": 10,
+      "saveCount": 16,
+      "lastOpened": 1770367221255,
+      "lastEdited": 1769871766452,
+      "lastSaved": 1769871781500,
+      "recentOpens": [
+        1769208472974,
+        1769208889105,
+        1769260358092,
+        1769261361998,
+        1769261905526,
+        1769262263450,
+        1769262863277,
+        1769262888479,
+        1769281962776,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1769859471890,
+        1770367004569,
+        1770367221255
+      ],
+      "recentEdits": [
+        1769261364001,
+        1769261442832,
+        1769261907543,
+        1769859518452,
+        1769859533199,
+        1769868610433,
+        1769870645613,
+        1769870895739,
+        1769871604460,
+        1769871766452
+      ]
+    },
+    "src/bin/test_detect.rs": {
+      "path": "src/bin/test_detect.rs",
+      "openCount": 10,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367221246,
+      "lastEdited": 1769218219372,
+      "lastSaved": 1769218217442,
+      "recentOpens": [
+        1769208472975,
+        1769218217164,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769281962776,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1770367221246
+      ],
+      "recentEdits": [
+        1769218219372
+      ]
+    },
+    "README.md": {
+      "path": "README.md",
+      "openCount": 13,
+      "editCount": 3,
+      "saveCount": 2,
+      "lastOpened": 1770367921386,
+      "lastEdited": 1770368030179,
+      "lastSaved": 1769218108917,
+      "recentOpens": [
+        1769208472975,
+        1769218104253,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769281962776,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1769913516268,
+        1769913666471,
+        1770367221110,
+        1770367921386
+      ],
+      "recentEdits": [
+        1769218106502,
+        1769218110872,
+        1770368030179
+      ]
+    },
+    "40-opendeck-akp153.rules": {
+      "path": "40-opendeck-akp153.rules",
+      "openCount": 2,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769217879606,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769208472975,
+        1769217879606
+      ],
+      "recentEdits": []
+    },
+    "src/watcher.rs": {
+      "path": "src/watcher.rs",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769208887621,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769208887621
+      ],
+      "recentEdits": []
+    },
+    "src/main.rs": {
+      "path": "src/main.rs",
+      "openCount": 2,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769871104650,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769208888207,
+        1769871104650
+      ],
+      "recentEdits": []
+    },
+    "manifest.json": {
+      "path": "manifest.json",
+      "openCount": 17,
+      "editCount": 9,
+      "saveCount": 13,
+      "lastOpened": 1770371424434,
+      "lastEdited": 1769913505899,
+      "lastSaved": 1769913504910,
+      "recentOpens": [
+        1769218096039,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769281962777,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1769348516666,
+        1769859488657,
+        1769860241845,
+        1770367004569,
+        1770367221221,
+        1770368087657,
+        1770369067452,
+        1770369337480,
+        1770371424434
+      ],
+      "recentEdits": [
+        1769218098187,
+        1769348518672,
+        1769860243945,
+        1769875478793,
+        1769913277650,
+        1769913331618,
+        1769913336120,
+        1769913492015,
+        1769913505899
+      ]
+    },
+    "40-opendeck-ajazz-n1.rules": {
+      "path": "40-opendeck-ajazz-n1.rules",
+      "openCount": 10,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367220995,
+      "lastEdited": 1769218126737,
+      "lastSaved": 1769218125056,
+      "recentOpens": [
+        1769218124628,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769281962777,
+        1769285850669,
+        1769286054715,
+        1769345621947,
+        1769913619812,
+        1770367220995
+      ],
+      "recentEdits": [
+        1769218126737
+      ]
+    },
+    "justfile": {
+      "path": "justfile",
+      "openCount": 23,
+      "editCount": 5,
+      "saveCount": 7,
+      "lastOpened": 1770371424434,
+      "lastEdited": 1770368211348,
+      "lastSaved": 1770368213797,
+      "recentOpens": [
+        1769218154545,
+        1769260358092,
+        1769262863277,
+        1769262888479,
+        1769277367815,
+        1769281962777,
+        1769285850668,
+        1769286054715,
+        1769345621947,
+        1769348553099,
+        1769860471440,
+        1769860472072,
+        1769875481562,
+        1769875482173,
+        1770367004569,
+        1770367221205,
+        1770367222008,
+        1770368189880,
+        1770368190513,
+        1770369067452,
+        1770369337483,
+        1770369337507,
+        1770371424434
+      ],
+      "recentEdits": [
+        1769218156795,
+        1769218166248,
+        1769348555123,
+        1769875489574,
+        1770368211348
+      ]
+    },
+    ".vscode/launch.json": {
+      "path": ".vscode/launch.json",
+      "openCount": 4,
+      "editCount": 3,
+      "saveCount": 3,
+      "lastOpened": 1770367220431,
+      "lastEdited": 1769282237831,
+      "lastSaved": 1769282236867,
+      "recentOpens": [
+        1769277288345,
+        1769281962777,
+        1769285850668,
+        1770367220431
+      ],
+      "recentEdits": [
+        1769277290563,
+        1769277385003,
+        1769282237831
+      ]
+    },
+    ".vscode/tasks.json": {
+      "path": ".vscode/tasks.json",
+      "openCount": 4,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367220897,
+      "lastEdited": 1769278415363,
+      "lastSaved": 1769278414372,
+      "recentOpens": [
+        1769278413172,
+        1769281962777,
+        1769285850668,
+        1770367220897
+      ],
+      "recentEdits": [
+        1769278415363
+      ]
+    },
+    ".vscode/extensions.json": {
+      "path": ".vscode/extensions.json",
+      "openCount": 4,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367220414,
+      "lastEdited": 1769279732176,
+      "lastSaved": 1769279731184,
+      "recentOpens": [
+        1769279730045,
+        1769281962777,
+        1769285850668,
+        1770367220414
+      ],
+      "recentEdits": [
+        1769279732176
+      ]
+    },
+    ".vscode/settings.json": {
+      "path": ".vscode/settings.json",
+      "openCount": 4,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367220889,
+      "lastEdited": 1769279753105,
+      "lastSaved": 1769279752121,
+      "recentOpens": [
+        1769279750982,
+        1769281962777,
+        1769285850668,
+        1770367220889
+      ],
+      "recentEdits": [
+        1769279753105
+      ]
+    },
+    ".vscode/lldb_commands.py": {
+      "path": ".vscode/lldb_commands.py",
+      "openCount": 4,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1770367220435,
+      "lastEdited": 1769280499113,
+      "lastSaved": 1769280498120,
+      "recentOpens": [
+        1769280496983,
+        1769281962777,
+        1769285850668,
+        1770367220435
+      ],
+      "recentEdits": [
+        1769280499113
+      ]
+    },
+    "Cargo.lock": {
+      "path": "Cargo.lock",
+      "openCount": 3,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770367761222,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769350297840,
+        1770367054031,
+        1770367761222
+      ],
+      "recentEdits": []
+    },
+    ".intentionally-empty-file.o": {
+      "path": ".intentionally-empty-file.o",
+      "openCount": 2,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769913613087,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769350298944,
+        1769913613087
+      ],
+      "recentEdits": []
+    },
+    "assets/icon.svg": {
+      "path": "assets/icon.svg",
+      "openCount": 3,
+      "editCount": 1,
+      "saveCount": 2,
+      "lastOpened": 1770367221197,
+      "lastEdited": 1769872149362,
+      "lastSaved": 1769873526404,
+      "recentOpens": [
+        1769872121564,
+        1770367004569,
+        1770367221197
+      ],
+      "recentEdits": [
+        1769872149362
+      ]
+    },
+    "n1": {
+      "path": "n1",
+      "openCount": 1,
+      "editCount": 1,
+      "saveCount": 1,
+      "lastOpened": 1769873803317,
+      "lastEdited": 1769912748364,
+      "lastSaved": 1769912747385,
+      "recentOpens": [
+        1769873803317
+      ],
+      "recentEdits": [
+        1769912748364
+      ]
+    },
+    "src/bin/debug_raw.rs": {
+      "path": "src/bin/debug_raw.rs",
+      "openCount": 3,
+      "editCount": 3,
+      "saveCount": 4,
+      "lastOpened": 1770367221231,
+      "lastEdited": 1769875702040,
+      "lastSaved": 1770367217201,
+      "recentOpens": [
+        1769875651656,
+        1770367004569,
+        1770367221231
+      ],
+      "recentEdits": [
+        1769875661502,
+        1769875692115,
+        1769875702040
+      ]
+    },
+    "src/bin/debug_raw_hid.rs": {
+      "path": "src/bin/debug_raw_hid.rs",
+      "openCount": 2,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770367221235,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769875684127,
+        1770367221235
+      ],
+      "recentEdits": []
+    },
+    "CHANGELOG.md": {
+      "path": "CHANGELOG.md",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769913214273,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769913214273
+      ],
+      "recentEdits": []
+    },
+    "LICENSE": {
+      "path": "LICENSE",
+      "openCount": 4,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770371339189,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769913258488,
+        1769913259121,
+        1770371338558,
+        1770371339189
+      ],
+      "recentEdits": []
+    },
+    "cliff.toml": {
+      "path": "cliff.toml",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769913573475,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769913573475
+      ],
+      "recentEdits": []
+    },
+    ".gitignore": {
+      "path": ".gitignore",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1769913622194,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1769913622194
+      ],
+      "recentEdits": []
+    },
+    ".vscode/frequent-flyer.json": {
+      "path": ".vscode/frequent-flyer.json",
+      "openCount": 1,
+      "editCount": 5,
+      "saveCount": 0,
+      "lastOpened": 1770367220423,
+      "lastEdited": 1770367377600,
+      "lastSaved": 0,
+      "recentOpens": [
+        1770367220423
+      ],
+      "recentEdits": [
+        1770367249282,
+        1770367281362,
+        1770367313443,
+        1770367345521,
+        1770367377600
+      ]
+    },
+    "src/bin/debug_inputs.rs": {
+      "path": "src/bin/debug_inputs.rs",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770367221226,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1770367221226
+      ],
+      "recentEdits": []
+    },
+    "src/bin/map_buttons.rs": {
+      "path": "src/bin/map_buttons.rs",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770367221238,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1770367221238
+      ],
+      "recentEdits": []
+    },
+    "src/bin/simple_read.rs": {
+      "path": "src/bin/simple_read.rs",
+      "openCount": 1,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770367221242,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1770367221242
+      ],
+      "recentEdits": []
+    },
+    "build/net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/manifest.json": {
+      "path": "build/net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/manifest.json",
+      "openCount": 2,
+      "editCount": 0,
+      "saveCount": 0,
+      "lastOpened": 1770371835951,
+      "lastEdited": 0,
+      "lastSaved": 0,
+      "recentOpens": [
+        1770368238273,
+        1770371835951
+      ],
+      "recentEdits": []
+    }
+  },
+  "lastUpdated": 1770371865951
+}

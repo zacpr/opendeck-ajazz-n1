@@ -1,0 +1,115 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug opendeck-ajazz-n1",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--package=opendeck-ajazz-n1"
+                ],
+                "filter": {
+                    "name": "opendeck-ajazz-n1",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_LOG": "debug"
+            },
+            "preLaunchTask": "cargo build"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug test_detect",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=test_detect"
+                ],
+                "filter": {
+                    "name": "test_detect",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_LOG": "debug"
+            },
+            "preLaunchTask": "cargo build test_detect"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug (Release) opendeck-ajazz-n1",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--release",
+                    "--package=opendeck-ajazz-n1"
+                ],
+                "filter": {
+                    "name": "opendeck-ajazz-n1",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_LOG": "debug"
+            },
+            "preLaunchTask": "cargo build --release"
+        },
+        {
+            "type": "lldb",
+            "request": "attach",
+            "name": "Attach to opendeck-ajazz-n1",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--package=opendeck-ajazz-n1"
+                ],
+                "filter": {
+                    "name": "opendeck-ajazz-n1",
+                    "kind": "bin"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "cargo build"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Build Plugin Package",
+            "runtimeExecutable": "just",
+            "args": ["package"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Run unit tests",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=opendeck-ajazz-n1"
+                ],
+                "filter": {
+                    "name": "opendeck-ajazz-n1",
+                    "kind": "bin"
+                }
+            },
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "cargo test --no-run"
+        }
+    ]
+}

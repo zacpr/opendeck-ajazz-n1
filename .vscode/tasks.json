@@ -1,0 +1,322 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cargo build",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo build --release",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--release"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo build test_detect",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--bin=test_detect"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo check",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "check"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo test",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "test"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo test --no-run",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "test",
+                "--no-run"
+            ],
+            "group": "test",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo clippy",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "clippy",
+                "--",
+                "-D",
+                "warnings"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "cargo clean",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "just build-linux",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "build-linux"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "detail": "Build for Linux (x86_64-unknown-linux-gnu)"
+        },
+        {
+            "label": "just build-mac",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "build-mac"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "detail": "Build for macOS (universal2-apple-darwin) using Docker"
+        },
+        {
+            "label": "just build-win",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "build-win"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "detail": "Build for Windows (x86_64-pc-windows-gnu)"
+        },
+        {
+            "label": "just package",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "package"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Full package build (Linux, Mac, Windows) + collect + zip"
+        },
+        {
+            "label": "just clean",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Remove target directory"
+        },
+        {
+            "label": "just collect",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "collect"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Collect built binaries into build directory"
+        },
+        {
+            "label": "just zip",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "zip"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Create plugin zip file"
+        },
+        {
+            "label": "just bump",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "bump"
+            ],
+            "group": "none",
+            "problemMatcher": [],
+            "detail": "Bump version in Cargo.toml and manifest.json"
+        },
+        {
+            "label": "just tag",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "tag"
+            ],
+            "group": "none",
+            "problemMatcher": [],
+            "detail": "Generate changelog and create git tag"
+        },
+        {
+            "label": "just release",
+            "type": "shell",
+            "command": "just",
+            "args": [
+                "release"
+            ],
+            "group": "none",
+            "problemMatcher": [],
+            "detail": "Full release: bump, tag, and package"
+        },
+        {
+            "label": "cargo fmt",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "fmt"
+            ],
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "cargo fmt --check",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "fmt",
+                "--",
+                "--check"
+            ],
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "cargo doc",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "doc",
+                "--no-deps"
+            ],
+            "group": "none",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "detail": "Generate documentation"
+        },
+        {
+            "label": "cargo doc --open",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "doc",
+                "--no-deps",
+                "--open"
+            ],
+            "group": "none",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "detail": "Generate and open documentation"
+        },
+        {
+            "label": "Run opendeck-ajazz-n1",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "run"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "Run test_detect",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "run",
+                "--bin=test_detect"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "Run opendeck-ajazz-n1 (Release)",
+            "type": "cargo",
+            "command": "cargo",
+            "args": [
+                "run",
+                "--release"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$rustc"
+            ]
+        }
+    ]
+}

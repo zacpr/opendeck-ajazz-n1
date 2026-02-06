@@ -1,0 +1,61 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#fd45e8",
+        "activityBar.background": "#fd45e8",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#545f01",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#fd45e8",
+        "statusBar.background": "#fc13e2",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#fd45e8",
+        "statusBarItem.remoteBackground": "#fc13e2",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#fc13e2",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#fc13e299",
+        "titleBar.inactiveForeground": "#e7e7e799",
+        "panel.border": "#fd45e8",
+        "sideBar.border": "#fd45e8",
+        "statusBar.border": "#fc13e2",
+        "titleBar.border": "#fc13e2"
+    },
+    "peacock.color": "#fc13e2",
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true,
+        "editor.semanticHighlighting.enabled": true
+    },
+    "rust-analyzer.checkOnSave.command": "clippy",
+    "rust-analyzer.cargo.features": "all",
+    "rust-analyzer.cargo.loadOutDirsFromCheck": true,
+    "rust-analyzer.inlayHints.bindingModeHints.enable": true,
+    "rust-analyzer.inlayHints.chainingHints.enable": true,
+    "rust-analyzer.inlayHints.closingBraceHints.enable": true,
+    "rust-analyzer.inlayHints.closingBraceHints.minLines": 5,
+    "rust-analyzer.inlayHints.lifetimeElisionHints.enable": "skip_trivial",
+    "rust-analyzer.inlayHints.typeHints.enable": true,
+    "rust-analyzer.inlayHints.parameterHints.enable": true,
+    "rust-analyzer.lens.enable": true,
+    "rust-analyzer.lens.run.enable": true,
+    "rust-analyzer.lens.debug.enable": true,
+    "rust-analyzer.lens.implementations.enable": true,
+    "rust-analyzer.lens.references.adt.enable": true,
+    "rust-analyzer.lens.references.enumVariant.enable": true,
+    "rust-analyzer.lens.references.method.enable": true,
+    "rust-analyzer.lens.references.trait.enable": true,
+    "rust-analyzer.procMacro.enable": true,
+    "files.associations": {
+        "*.rs": "rust"
+    },
+    "files.watcherExclude": {
+        "**/target/**": true,
+        "**/Cargo.lock": true
+    },
+    "lldb.launch.initCommands": [
+        "command script import ${workspaceFolder}/.vscode/lldb_commands.py"
+    ],
+    "lldb.diagnostics": true
+}
