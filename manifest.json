@@ -5,10 +5,14 @@
   "Version": "1.0.1",
   "PluginUUID": "net.ashurtech.plugins.opendeck-ajazz-n1",
   "CodePathLin": "opendeck-ajazz-n1-linux",
+  "CodePathWin": "opendeck-ajazz-n1-win.exe",
+  "CodePathMac": "opendeck-ajazz-n1-macos",
   "Icon": "icon",
   "Category": "Hardware",
   "OS": [
-    { "Platform": "linux" }
+    { "Platform": "linux" },
+    { "Platform": "windows" },
+    { "Platform": "mac" }
   ],
   "Actions": [],
   "DeviceNamespace": "N1"
