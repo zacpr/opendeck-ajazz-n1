@@ -1,13 +1,13 @@
 [package]
 name = "opendeck-ajazz-n1"
-version = "1.0.1"
+version = "1.0.3"
 edition = "2024"
 
 [dependencies]
 async-hid = { version = "0.4.4", default-features = false, features = ["tokio"] }
 data-url = "0.3.1"
 futures-lite = "2.6.0"
-version = "1.0.0"
+version = ""
 edition = "2024"
 
 [dependencies]
