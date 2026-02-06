@@ -49,8 +49,8 @@ collect:
 
 [working-directory: "build"]
 zip:
-    zip -r opendeck-ajazz-n1.sdPlugin {{id}}/
+    zip -r net.ashurtech.opendeck-ajazz-n1.streamDeckPlugin {{id}}/
     @echo ""
     @echo "Build output dir: $(pwd)"
-    @echo "✓ Plugin package created: $(pwd)/opendeck-ajazz-n1.sdPlugin"
+    @echo "✓ Plugin package created: $(pwd)/net.ashurtech.opendeck-ajazz-n1.streamDeckPlugin"
     @echo ""

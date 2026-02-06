@@ -1,12 +1,8 @@
 use mirajazz::{error::MirajazzError, types::DeviceInput};
 use std::sync::Mutex;
 
-/// AKP153 key count (3x6 = 18)
-const AKP153_KEY_COUNT: usize = 18;
 /// N1 key count (6x3 = 18: 15 buttons + 3 top LCDs)
 const N1_KEY_COUNT: usize = 18;
-/// Maximum key count we support (for bounds checking)
-const MAX_KEY_COUNT: usize = 18;
 
 /// N1 encoder/dial input IDs
 /// Input 30: Left face button (above the dial)
@@ -102,19 +98,6 @@ pub fn process_input_n1(input: u8, state: u8) -> Result<DeviceInput, MirajazzErr
     result
 }
 
-/// Process raw input from AKP153 device (18 buttons, remapped)
-pub fn process_input_akp153(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    log::info!("Processing AKP153 input: {}, {}", input, state);
-
-    match input as usize {
-        0..=MAX_KEY_COUNT => read_button_press_akp153(input, state),
-        _ => {
-            log::warn!("Unknown AKP153 input {}", input);
-            Err(MirajazzError::BadData)
-        }
-    }
-}
-
 fn read_button_states(states: &[u8], key_count: usize) -> Vec<bool> {
     let mut bools = vec![];
 
@@ -125,9 +108,8 @@ fn read_button_states(states: &[u8], key_count: usize) -> Vec<bool> {
     bools
 }
 
-/// Converts opendeck key index to device key index
-/// For AKP153: Uses specific mapping for 3x6 layout
-/// For N1: Maps 6×3 grid to device inputs.
+/// Converts opendeck key index to device key index for N1
+/// Maps 6×3 grid to device inputs.
 /// Both top LCDs (16-18) and main grid (1-15) have a +1 offset.
 ///
 ///   OpenDeck grid:     Intended device:    We send:
@@ -137,28 +119,19 @@ fn read_button_states(states: &[u8], key_count: usize) -> Vec<bool> {
 ///   [9]  [10] [11]     [7]  [8]  [9]       [6]  [7]  [8]
 ///   [12] [13] [14]     [10] [11] [12]      [9]  [10] [11]
 ///   [15] [16] [17]     [13] [14] [15]      [12] [13] [14]
-pub fn opendeck_to_device(key: u8, is_n1: bool) -> u8 {
-    if is_n1 {
-        match key {
-            // Top row LCDs: send position-1 to compensate for +1 offset
-            0 => 15,  // Want 16, send 15 (15+1=16)
-            1 => 16,  // Want 17, send 16 (16+1=17)
-            2 => 17,  // Want 18, send 17 (17+1=18)
-            // Main grid (3-17): send (key-3) to compensate for +1 offset
-            // key 3 → send 0 → lands at 1
-            // key 4 → send 1 → lands at 2
-            // ...
-            // key 17 → send 14 → lands at 15
-            3..=17 => key - 3,
-            _ => key,  // Fallback
-        }
-    } else {
-        // AKP153: specific key mapping
-        if (key as usize) < AKP153_KEY_COUNT {
-            [12, 9, 6, 3, 0, 15, 13, 10, 7, 4, 1, 16, 14, 11, 8, 5, 2, 17][key as usize]
-        } else {
-            key
-        }
+pub fn opendeck_to_device(key: u8) -> u8 {
+    match key {
+        // Top row LCDs: send position-1 to compensate for +1 offset
+        0 => 15,  // Want 16, send 15 (15+1=16)
+        1 => 16,  // Want 17, send 16 (16+1=17)
+        2 => 17,  // Want 18, send 17 (17+1=18)
+        // Main grid (3-17): send (key-3) to compensate for +1 offset
+        // key 3 → send 0 → lands at 1
+        // key 4 → send 1 → lands at 2
+        // ...
+        // key 17 → send 14 → lands at 15
+        3..=17 => key - 3,
+        _ => key,  // Fallback
     }
 }
 
@@ -180,17 +153,6 @@ fn device_to_opendeck_n1(key: usize) -> usize {
         // Main grid (1-15): direct mapping to OpenDeck 3-17
         1..=15 => key + 2,  // Device 1→OD 3, Device 2→OD 4, ..., Device 15→OD 17
         _ => key.saturating_sub(1),  // Fallback
-    }
-}
-
-/// Converts AKP153 device key index to opendeck key index (specific mapping)
-fn device_to_opendeck_akp153(key: usize) -> usize {
-    let key = key.saturating_sub(1);
-
-    if key < AKP153_KEY_COUNT {
-        [4, 10, 16, 3, 9, 15, 2, 8, 14, 1, 7, 13, 0, 6, 12, 5, 11, 17][key]
-    } else {
-        key
     }
 }
 
@@ -216,60 +178,3 @@ fn read_button_press_n1(input: u8, state: u8) -> Result<DeviceInput, MirajazzErr
         N1_KEY_COUNT,
     )))
 }
-
-fn read_button_press_akp153(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    let mut button_states = vec![0x01];
-    button_states.extend(vec![0u8; MAX_KEY_COUNT + 1]);
-
-    if input == 0 {
-        return Ok(DeviceInput::ButtonStateChange(read_button_states(
-            &button_states,
-            MAX_KEY_COUNT,
-        )));
-    }
-
-    let pressed_index: usize = device_to_opendeck_akp153(input as usize);
-
-    if pressed_index < MAX_KEY_COUNT {
-        button_states[pressed_index + 1] = state;
-    }
-
-    Ok(DeviceInput::ButtonStateChange(read_button_states(
-        &button_states,
-        MAX_KEY_COUNT,
-    )))
-}
-
-/// N1 has 2 face buttons (inputs 30, 31) that have no display.
-/// We map both to encoder 0 press events so they can trigger actions in OpenDeck.
-fn read_face_button_press(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    // Map both face buttons to encoder 0
-    // When either button is pressed, encoder 0 is "pressed"
-    let encoder_pressed = state != 0;
-    
-    log::debug!(
-        "N1 face button {} {} → encoder 0 {}",
-        input,
-        if encoder_pressed { "pressed" } else { "released" },
-        if encoder_pressed { "pressed" } else { "released" }
-    );
-    
-    // Return encoder state change for encoder 0
-    Ok(DeviceInput::EncoderStateChange(vec![encoder_pressed]))
-}
-
-/// N1 dial press (input 35) - pressing down on the dial
-/// Mapped to encoder 0 press event
-fn read_dial_press(state: u8) -> Result<DeviceInput, MirajazzError> {
-    let encoder_pressed = state != 0;
-    
-    log::debug!(
-        "N1 dial press {} → encoder 0 {}",
-        if encoder_pressed { "pressed" } else { "released" },
-        if encoder_pressed { "pressed" } else { "released" }
-    );
-    
-    // Return encoder state change for encoder 0
-    Ok(DeviceInput::EncoderStateChange(vec![encoder_pressed]))
-}
-

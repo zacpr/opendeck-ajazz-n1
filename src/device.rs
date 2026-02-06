@@ -137,12 +137,7 @@ pub async fn connect(candidate: &CandidateDevice) -> Result<Device, MirajazzErro
 async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzError> {
     log::info!("Connecting to {} for incoming events", candidate.id);
 
-    let is_n1 = matches!(candidate.kind, Kind::N1);
-    let process_input = if is_n1 {
-        crate::inputs::process_input_n1
-    } else {
-        crate::inputs::process_input_akp153
-    };
+    let process_input = crate::inputs::process_input_n1;
 
     let devices_lock = DEVICES.read().await;
     let reader = match devices_lock.get(&candidate.id) {
@@ -282,10 +277,9 @@ pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(),
 
             let kind = Kind::from_vid_pid(device.vid, device.pid).unwrap(); // Safe to unwrap here, because device is already filtered
 
-            let is_n1 = matches!(kind, Kind::N1);
             device
                 .set_button_image(
-                    opendeck_to_device(position, is_n1),
+                    opendeck_to_device(position),
                     get_image_format_for_key(&kind, position),
                     image,
                 )
@@ -293,15 +287,11 @@ pub async fn handle_set_image(device: &Device, evt: SetImageEvent) -> Result<(),
             device.flush().await?;
             
             // Small delay for N1 to ensure device processes the image
-            if is_n1 {
-                tokio::time::sleep(Duration::from_millis(20)).await;
-            }
+            tokio::time::sleep(Duration::from_millis(20)).await;
         }
         (Some(position), None) => {
-            let kind = Kind::from_vid_pid(device.vid, device.pid).unwrap();
-            let is_n1 = matches!(kind, Kind::N1);
             device
-                .clear_button_image(opendeck_to_device(position, is_n1))
+                .clear_button_image(opendeck_to_device(position))
                 .await?;
             device.flush().await?;
         }

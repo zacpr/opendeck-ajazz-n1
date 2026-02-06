@@ -14,25 +14,14 @@ use crate::{
 };
 
 fn get_device_id(dev: &HidDeviceInfo) -> Option<String> {
-    let kind = Kind::from_vid_pid(dev.vendor_id, dev.product_id)?;
+    let _kind = Kind::from_vid_pid(dev.vendor_id, dev.product_id)?;
 
-    match kind.protocol_version() {
-        2 | 3 => Some(format!(
-            "{}-{}",
-            DEVICE_NAMESPACE,
-            dev.serial_number.clone()?,
-        )),
-        1 => {
-            // All the "v1" devices share the same serial. Hardcode it because Windows returns invalid serial for them
-            // Also suffix v1 devices with the
-            Some(format!(
-                "{}-355499441494-{}",
-                DEVICE_NAMESPACE,
-                kind.id_suffix()
-            ))
-        }
-        _ => unreachable!(),
-    }
+    // N1 is a v3 device with unique serial numbers
+    Some(format!(
+        "{}-{}",
+        DEVICE_NAMESPACE,
+        dev.serial_number.clone()?,
+    ))
 }
 
 fn device_info_to_candidate(dev: HidDeviceInfo) -> Option<CandidateDevice> {

@@ -1,6 +1,6 @@
 use device::{handle_error, handle_set_image};
 use mirajazz::device::Device;
-use std::{collections::HashMap, process::exit, sync::LazyLock};
+use std::{collections::HashMap, sync::LazyLock};
 use tokio::sync::{Mutex, RwLock};
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
 use watcher::watcher_task;

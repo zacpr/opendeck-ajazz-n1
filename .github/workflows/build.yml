@@ -111,10 +111,10 @@ jobs:
           mv net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1-linux net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1-linux || true
           mv net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1.exe net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1-win.exe || true
           mv net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1 net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/opendeck-ajazz-n1-macos || true
-          zip -r opendeck-ajazz-n1.sdPlugin net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/
+          zip -r net.ashurtech.opendeck-ajazz-n1.streamDeckPlugin net.ashurtech.plugins.opendeck-ajazz-n1.sdPlugin/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/opendeck-ajazz-n1.sdPlugin
+          files: build/net.ashurtech.opendeck-ajazz-n1.streamDeckPlugin
           generate_release_notes: true

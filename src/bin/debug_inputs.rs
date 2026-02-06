@@ -11,25 +11,56 @@ use mirajazz::{
 const AJAZZ_VID: u16 = 0x0300;
 const N1_PID: u16 = 0x3007;
 
-/// Process raw input - capture ALL inputs
+/// Process raw input - capture ALL inputs including dial and face buttons
 fn process_input_debug(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
     println!("[RAW_INPUT] input={} state={} (0x{:02x}/0x{:02x})", input, state, input, state);
     
-    // Classify based on what we've learned
+    // Classify based on the N1 input mapping
     let classification = match input {
         0 => "Header/Sync",
-        1..=18 => "Button/LCD (expected range)",
-        30 => "Encoder press?",
-        31 => "Other encoder?",
-        50 => "Encoder twist LEFT/CCW",
-        51 => "Encoder twist RIGHT/CW",
+        1..=15 => "Main grid button",
+        16..=18 => "Top LCD button",
+        30 => "Left face button (→ encoder 0)",
+        31 => "Right face button (→ encoder 0)",
+        50 => "Dial rotate CCW/LEFT (→ encoder 0 -1)",
+        51 => "Dial rotate CW/RIGHT (→ encoder 0 +1)",
         _ => "Unknown",
     };
     println!("  → Classification: {}", classification);
     
-    // Return empty state
-    let button_states = vec![false; 18];
-    Ok(DeviceInput::ButtonStateChange(button_states))
+    // Return proper DeviceInput based on input type
+    match input {
+        // Main buttons - return button state
+        0..=18 => {
+            let mut button_states = vec![false; 18];
+            if input > 0 && input <= 18 {
+                // Map device input to button index (simplified)
+                let idx = if input >= 16 { (input - 16) as usize } else { (input + 2) as usize };
+                if idx < 18 {
+                    button_states[idx] = state != 0;
+                }
+            }
+            Ok(DeviceInput::ButtonStateChange(button_states))
+        }
+        
+        // Face buttons - mapped to encoder 0 press
+        30 | 31 => {
+            println!("  → Sending EncoderStateChange([{}])", state != 0);
+            Ok(DeviceInput::EncoderStateChange(vec![state != 0]))
+        }
+        
+        // Dial rotation - mapped to encoder 0 twist
+        50 => {
+            println!("  → Sending EncoderTwist([-1])");
+            Ok(DeviceInput::EncoderTwist(vec![-1]))
+        }
+        51 => {
+            println!("  → Sending EncoderTwist([1])");
+            Ok(DeviceInput::EncoderTwist(vec![1]))
+        }
+        
+        _ => Ok(DeviceInput::NoData)
+    }
 }
 
 #[tokio::main]
