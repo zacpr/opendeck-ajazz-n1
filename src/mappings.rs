@@ -71,12 +71,9 @@ impl Kind {
     }
 
     /// Returns number of encoders (dials/knobs) for this device
-    /// N1 has 3 virtual encoders:
-    /// - Encoder 0: Left face button
-    /// - Encoder 1: Right face button
-    /// - Encoder 2: Dial (press + rotate)
+    /// N1 has 1 encoder (the dial)
     pub fn encoder_count(&self) -> usize {
-        3
+        1
     }
 
     /// Returns human-readable device name

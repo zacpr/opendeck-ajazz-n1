@@ -16,65 +16,52 @@ const N1_DIAL_PRESS: u8 = 35;
 const N1_DIAL_ROTATE_CCW: u8 = 50;
 const N1_DIAL_ROTATE_CW: u8 = 51;
 
-/// Track current encoder states to properly handle multiple encoders
-/// [encoder0_pressed, encoder1_pressed, encoder2_pressed]
-static ENCODER_STATES: Mutex<[bool; 3]> = Mutex::new([false, false, false]);
+/// Track current encoder state
+/// [encoder0_pressed] - the dial
+static ENCODER_STATES: Mutex<[bool; 1]> = Mutex::new([false]);
 
 /// Process raw input from N1 device (18 keys: 15 buttons + 3 LCDs, plus dial/face buttons)
 /// Device inputs 16-18 (top LCDs) map to OpenDeck keys 0-2
 /// Device inputs 1-15 (main grid) map to OpenDeck keys 3-17
-/// Device input 30 (left face button) maps to encoder 0 press
-/// Device input 31 (right face button) maps to encoder 1 press
-/// Device input 35 (dial press) maps to encoder 2 press
-/// Device inputs 50, 51 (dial rotation) map to encoder 2 twist
+/// Device inputs 30, 31 (face buttons) are ignored for now (no display)
+/// Device input 35 (dial press) maps to encoder 0 press
+/// Device inputs 50, 51 (dial rotation) map to encoder 0 twist
 pub fn process_input_n1(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
-    log::info!("Processing N1 input: {}, {}", input, state);
+    log::info!("Processing N1 input: input={}, state={}", input, state);
 
     let result = match input {
         // Main grid and top LCDs (inputs 1-18)
         1..=18 => read_button_press_n1(input, state),
         
-        // Left face button - mapped to encoder 0
+        // Left face button - treat as regular button (not encoder)
         N1_FACE_BUTTON_LEFT => {
+            log::debug!("Left face button (input 30) pressed, state={}", state);
+            Ok(DeviceInput::ButtonStateChange(vec![false; N1_KEY_COUNT]))
+        }
+        
+        // Right face button - treat as regular button (not encoder)
+        N1_FACE_BUTTON_RIGHT => {
+            log::debug!("Right face button (input 31) pressed, state={}", state);
+            Ok(DeviceInput::ButtonStateChange(vec![false; N1_KEY_COUNT]))
+        }
+        
+        // Dial press - mapped to encoder 0
+        N1_DIAL_PRESS => {
             let mut states = ENCODER_STATES.lock().unwrap();
             states[0] = state != 0;
             Ok(DeviceInput::EncoderStateChange(vec![
-                states[0],  // Encoder 0: left face button
-                states[1],  // Encoder 1: preserve state
-                states[2],  // Encoder 2: preserve state
+                states[0],  // Encoder 0: dial press
             ]))
         }
         
-        // Right face button - mapped to encoder 1
-        N1_FACE_BUTTON_RIGHT => {
-            let mut states = ENCODER_STATES.lock().unwrap();
-            states[1] = state != 0;
-            Ok(DeviceInput::EncoderStateChange(vec![
-                states[0],  // Encoder 0: preserve state
-                states[1],  // Encoder 1: right face button
-                states[2],  // Encoder 2: preserve state
-            ]))
-        }
-        
-        // Dial press - mapped to encoder 2
-        N1_DIAL_PRESS => {
-            let mut states = ENCODER_STATES.lock().unwrap();
-            states[2] = state != 0;
-            Ok(DeviceInput::EncoderStateChange(vec![
-                states[0],  // Encoder 0: preserve state
-                states[1],  // Encoder 1: preserve state
-                states[2],  // Encoder 2: dial press
-            ]))
-        }
-        
-        // Dial rotation - mapped to encoder 2
+        // Dial rotation - mapped to encoder 0
         N1_DIAL_ROTATE_CCW => {
-            // Counter-clockwise rotation on encoder 2
-            Ok(DeviceInput::EncoderTwist(vec![0, 0, -1]))
+            // Counter-clockwise rotation on encoder 0
+            Ok(DeviceInput::EncoderTwist(vec![-1]))
         }
         N1_DIAL_ROTATE_CW => {
-            // Clockwise rotation on encoder 2
-            Ok(DeviceInput::EncoderTwist(vec![0, 0, 1]))
+            // Clockwise rotation on encoder 0
+            Ok(DeviceInput::EncoderTwist(vec![1]))
         }
         
         _ => {

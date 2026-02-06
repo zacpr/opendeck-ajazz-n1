@@ -25,14 +25,18 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
         let device = connect(&candidate).await?;
 
         // N1 requires software mode to be set for control
-        if matches!(candidate.kind, Kind::N1) {
-            device.set_mode(3).await?;  // 3 = Software mode
-            tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
-        }
+        log::info!("Setting device mode to 3 (software mode)...");
+        device.set_mode(3).await?;  // 3 = Software mode
+        log::info!("Device mode set successfully, waiting 100ms...");
+        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
 
+        log::info!("Setting brightness to 50...");
         device.set_brightness(50).await?;
+        log::info!("Clearing all button images...");
         device.clear_all_button_images().await?;
+        log::info!("Flushing device...");
         device.flush().await?;
+        log::info!("Device initialization complete");
 
         Ok(device)
     }()
@@ -73,9 +77,15 @@ pub async fn device_task(candidate: CandidateDevice, token: CancellationToken) {
     DEVICES.write().await.insert(candidate.id.clone(), device);
 
     tokio::select! {
-        _ = device_events_task(&candidate) => {},
-        _ = keepalive_task(&candidate) => {},
-        _ = token.cancelled() => {}
+        result = device_events_task(&candidate) => {
+            log::error!("device_events_task exited with: {:?}", result);
+        },
+        result = keepalive_task(&candidate) => {
+            log::error!("keepalive_task exited with: {:?}", result);
+        },
+        _ = token.cancelled() => {
+            log::info!("Cancellation token triggered, shutting down");
+        }
     };
 
     log::info!("Shutting down device {:?}", candidate);
@@ -184,10 +194,20 @@ async fn device_events_task(candidate: &CandidateDevice) -> Result<(), MirajazzE
 
             let result = match update {
                 DeviceStateUpdate::ButtonDown(key) => {
-                    openaction::device_plugin::key_down(id, key).await
+                    log::info!("📤 Sending key_down(id={}, key={})", id, key);
+                    let result = openaction::device_plugin::key_down(id.clone(), key).await;
+                    if let Err(ref e) = result {
+                        log::error!("Failed to send key_down: {}", e);
+                    }
+                    result
                 }
                 DeviceStateUpdate::ButtonUp(key) => {
-                    openaction::device_plugin::key_up(id, key).await
+                    log::info!("📤 Sending key_up(id={}, key={})", id, key);
+                    let result = openaction::device_plugin::key_up(id, key).await;
+                    if let Err(ref e) = result {
+                        log::error!("Failed to send key_up: {}", e);
+                    }
+                    result
                 }
                 DeviceStateUpdate::EncoderDown(encoder) => {
                     log::info!("📤 Sending encoder_down(id={}, encoder={})", id, encoder);
@@ -242,10 +262,14 @@ async fn keepalive_task(candidate: &CandidateDevice) -> Result<(), MirajazzError
             None => return Ok(()),
         };
 
-        if let Err(e) = device.keep_alive().await {
-            drop(devices_lock);
-            if !handle_error(&candidate.id, e).await {
-                break;
+        match device.keep_alive().await {
+            Ok(_) => log::debug!("Keepalive sent successfully to {}", candidate.id),
+            Err(e) => {
+                log::error!("Keepalive failed for {}: {:?}", candidate.id, e);
+                drop(devices_lock);
+                if !handle_error(&candidate.id, e).await {
+                    break;
+                }
             }
         }
     }
