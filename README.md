@@ -5,7 +5,7 @@
 **Fork of [opendeck-akp153](https://github.com/4ndv/opendeck-akp153)**
 Many thanks to the original author for the work done on this plugin and everyone else involved in opendeck and the ecosystem.
 
-An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for the Ajazz N1 only.
+An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for Ajazz and Mirabox N1 devices.
 
 ## OpenDeck version
 
@@ -16,6 +16,7 @@ Built with [openaction](https://crates.io/crates/openaction) 2.5.0
 ## Supported devices
 
 - Ajazz N1 (0300:3007)
+- Mirabox N1 (6603:1000)
 
 ## Features
 
