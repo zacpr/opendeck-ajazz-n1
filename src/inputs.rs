@@ -17,16 +17,26 @@ static DIAL_PRESSED: Mutex<bool> = Mutex::new(false);
 /// Process raw input from N1 device (18 keys: 15 buttons + 3 LCDs, plus dial/face buttons)
 /// Device inputs 16-18 (top LCDs) map to OpenDeck keys 0-2
 /// Device inputs 1-15 (main grid) map to OpenDeck keys 3-17
-/// Device inputs 30, 31 (face buttons) are ignored (no display, no action)
+/// Device inputs 30, 31 (face buttons) are routed onto the top display slots:
+///   input 30 (left face)  -> OpenDeck key 0 (top-left display)
+///   input 31 (right face) -> OpenDeck key 1 (top-middle display)
+/// The top LCDs are display-only and never emit input themselves, so reusing
+/// their key slots gives the face buttons a configurable image plus a real press.
 /// Device input 35 (dial press) maps to encoder 0
 /// Device inputs 50, 51 (dial rotation) map to encoder 0 twist
 pub fn process_input_n1(input: u8, state: u8) -> Result<DeviceInput, MirajazzError> {
     log::info!("Processing N1 input: input={}, state={}", input, state);
 
-    // Handle face buttons (inputs 30, 31) - EXPERIMENTAL: currently ignored
-    if input == 30 || input == 31 {
-        log::info!("N1 face button pressed: input={}, ignoring (experimental)", input);
-        return Ok(DeviceInput::ButtonStateChange(vec![false; N1_KEY_COUNT]));
+    // Face buttons (inputs 30, 31): route onto the top display slots so they
+    // act as real buttons. The displays never emit input 16/17 themselves, so
+    // we reuse those device codes to flow through the normal button pipeline.
+    if input == 30 {
+        log::info!("N1 left face button (input 30) -> OpenDeck key 0");
+        return read_button_press_n1(16, state);
+    }
+    if input == 31 {
+        log::info!("N1 right face button (input 31) -> OpenDeck key 1");
+        return read_button_press_n1(17, state);
     }
 
     // Handle dial press (input 35)

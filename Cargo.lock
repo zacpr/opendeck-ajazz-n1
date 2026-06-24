@@ -553,7 +553,7 @@ dependencies = [
 
 [[package]]
 name = "opendeck-ajazz-n1"
-version = "1.0.4"
+version = "1.1.7"
 dependencies = [
  "async-hid",
  "data-url",

@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  Name: {}", dev.name);
             println!("  VID: {:04x}, PID: {:04x}", dev.vendor_id, dev.product_id);
             println!("  Usage Page: {}, Usage: {}", dev.usage_page, dev.usage_id);
-            n1_info = Some(dev.clone());
+            n1_info = Some(dev);
         }
     }
     

@@ -84,7 +84,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut n1_info = None;
     for dev in &devices {
         if dev.vendor_id == AJAZZ_VID && dev.product_id == N1_PID && dev.usage_page == 65440 {
-            n1_info = Some(dev.clone());
+            n1_info = Some(dev);
             break;
         }
     }

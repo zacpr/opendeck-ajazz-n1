@@ -5,7 +5,7 @@
 **Fork of [opendeck-akp153](https://github.com/4ndv/opendeck-akp153)**
 Many thanks to the original author for the work done on this plugin and everyone else involved in opendeck and the ecosystem.
 
-An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for the Ajazz N1 only.
+An unofficial plugin for Ajazz N1 devices. This fork provides dedicated support for Ajazz and Mirabox N1 devices.
 
 ## OpenDeck version
 
@@ -16,24 +16,22 @@ Built with [openaction](https://crates.io/crates/openaction) 2.5.0
 ## Supported devices
 
 - Ajazz N1 (0300:3007)
+- Mirabox N1 (6603:1000)
 
 ## Features
 
 - Full support for all 15 main buttons + 3 top LCD buttons
-- **Dial Press**: Working - the dial can be used as a button (encoder 0)
+- **Dial**: Working - press (encoder 0) and rotation (CW/CCW) both trigger actions
+- **Face buttons**: Working - the two buttons above the dial (inputs 30/31) are mapped onto the top-left and top-middle display slots (OpenDeck keys 0 and 1)
 - Software mode control for full device management
 
-### Encoder / Dial Support (Work in Progress)
+### Encoder / Dial & Face Button Support
 
-**Status**: The dial press function works and can trigger actions. Dial rotation and the face buttons above the dial are a work in progress.
+**Status**: Working. The dial press, dial rotation (clockwise and counter-clockwise), and both face buttons are detected and forwarded to OpenDeck.
 
-**The Challenge**: The Ajazz N1 device firmware aggressively captures certain input combinations for its own "scene switching" functionality:
-- Rotating the dial while depressed triggers firmware scene switching
-- The face buttons (inputs 30/31) may also be intercepted by the firmware
+The two face buttons have no display of their own, so they are routed onto the top display slots (keys 0 and 1): you get a configurable icon on the display plus a real button press from the physical face button. The top-right display (key 2) remains display-only.
 
-While we can detect these inputs at the USB level, the device firmware may intercept or override them before they reach the host. This makes reliable encoder rotation and face button support difficult or potentially impossible to implement fully.
-
-We're continuing to investigate workarounds, but full encoder/face button configuration may be limited by the device firmware itself.
+> Note: rotating the dial *while it is pressed* is captured by the device firmware for its own scene-switching and does not reach the host. Normal rotation and press work as expected.
 
 ## Platform support
 

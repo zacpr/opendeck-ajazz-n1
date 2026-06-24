@@ -7,11 +7,17 @@ use mirajazz::{
 pub const DEVICE_NAMESPACE: &str = "N1";
 
 pub const AJAZZ_VID: u16 = 0x0300;
+pub const MIRABOX_VID: u16 = 0x6603;
 pub const N1_PID: u16 = 0x3007;
+pub const N1MIR_PID: u16 = 0x1000;
 
 pub const N1_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, AJAZZ_VID, N1_PID);
+pub const N1MIR_QUERY: DeviceQuery = DeviceQuery::new(65440, 1, MIRABOX_VID, N1MIR_PID);
 
-pub const QUERIES: [DeviceQuery; 1] = [N1_QUERY];
+pub const QUERIES: [DeviceQuery; 2] = [
+    N1_QUERY,
+    N1MIR_QUERY
+];
 
 /// Returns correct image format for device kind and key
 pub fn get_image_format_for_key(_kind: &Kind, key: u8) -> ImageFormat {
@@ -31,15 +37,22 @@ pub fn get_image_format_for_key(_kind: &Kind, key: u8) -> ImageFormat {
 #[derive(Debug, Clone)]
 pub enum Kind {
     N1,
+    MiraboxN1
 }
 
 impl Kind {
     /// Matches devices VID+PID pairs to correct kinds
     pub fn from_vid_pid(vid: u16, pid: u16) -> Option<Self> {
-        if vid == AJAZZ_VID && pid == N1_PID {
-            Some(Kind::N1)
-        } else {
-            None
+        match vid {
+            AJAZZ_VID => match pid {
+                N1_PID => Some(Kind::N1),
+                _ => None
+            },
+            MIRABOX_VID => match pid {
+                N1MIR_PID => Some(Kind::MiraboxN1),
+                _ => None
+            }
+            _ => None
         }
     }
 
@@ -58,8 +71,9 @@ impl Kind {
         // Row 3: [KEY_7]  [KEY_8]  [KEY_9]   <- Main row 2 (inputs 7, 8, 9)
         // Row 4: [KEY_10] [KEY_11] [KEY_12]  <- Main row 3 (inputs 10, 11, 12)
         // Row 5: [KEY_13] [KEY_14] [KEY_15]  <- Main row 4 (inputs 13, 14, 15)
-        // Note: The 2 top normal buttons (inputs 30, 31) are NOT shown in GUI
-        // (They work but have no display, so we hide them to avoid confusion)
+        // Note: The 2 face buttons (inputs 30, 31) have no display of their own,
+        // so they are routed onto the top display slots (keys 0 and 1) in inputs.rs
+        // rather than occupying their own grid positions.
         (6, 3)
     }
 
@@ -78,7 +92,10 @@ impl Kind {
 
     /// Returns human-readable device name
     pub fn human_name(&self) -> String {
-        "Ajazz N1".to_string()
+        match &self {
+            Self::N1 => "Ajazz N1",
+            Self::MiraboxN1 => "Mirabox N1"
+        }.to_string()
     }
 
 

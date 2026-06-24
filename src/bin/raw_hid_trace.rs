@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Found N1 interface:");
             println!("  Name: {}", dev.name);
             println!("  Usage Page: {}, Usage: {}", dev.usage_page, dev.usage_id);
-            n1_info = Some(dev.clone());
+            n1_info = Some(dev);
             break;
         }
     }
